@@ -1,0 +1,202 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── BUSINESS (TENANT) ───────────────────────────────────────────────────────
+model Business {
+  id                String   @id @default(cuid())
+  name              String
+  ownerName         String
+  type              String   // kibanda | small-supermarket | supermarket
+  operatingModel    String   @default("solo") // solo | small-team | medium | large
+  paymentMethods    String[] // ['cash','mpesa','credit','card']
+  productCategories String[]
+  perishablePercent Int      @default(30)
+  avgDailyTx        Int      @default(50)
+  existingRecords   String   @default("none") // none | notebook | excel | other
+  topPainPoint      String?
+  taxRegistered     Boolean  @default(false)
+  currencySymbol    String   @default("KES")
+  language          String   @default("en") // en | sw
+  adminPinHash      String
+  smsCredits        Int      @default(50)
+  atApiKey          String?
+  atUsername        String?
+  smsLowStock       Boolean  @default(true)
+  smsDailySummary   Boolean  @default(true)
+  smsMpesaConfirm   Boolean  @default(false)
+  smsRestockRemind  Boolean  @default(true)
+  isDemo            Boolean  @default(false)
+  demoSlug          String?  @unique
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  users  User[]
+  staff  Staff[]
+  items  Item[]
+  days   DayRecord[]
+
+  @@index([demoSlug])
+}
+
+// ─── USERS (OWNER / MANAGER — email login) ───────────────────────────────────
+model User {
+  id           String   @id @default(cuid())
+  businessId   String
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("owner") // owner | manager
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  business Business       @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  tokens   RefreshToken[]
+
+  @@index([businessId])
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── STAFF (PIN login — cashiers) ────────────────────────────────────────────
+model Staff {
+  id         String   @id @default(cuid())
+  businessId String
+  name       String
+  pinHash    String   // bcrypt(4-digit PIN)
+  role       String   @default("cashier") // cashier | manager
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  business Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  sales    Sale[]
+  expenses Expense[]
+
+  @@index([businessId])
+}
+
+// ─── ITEMS (INVENTORY LIBRARY) ───────────────────────────────────────────────
+model Item {
+  id         String  @id @default(cuid())
+  businessId String
+  name       String
+  emoji      String  @default("📦")
+  category   String  // vegetables | fruits | dairy | basics | drinks | toiletries | other
+  unit       String  // kg | L | pcs | bunch | g | ml | custom
+  buyPrice   Float   @default(0)
+  sellPrice  Float   @default(0)
+  stock      Float   @default(0)
+  threshold  Float   @default(5) // low-stock alert level
+  barcode    String?
+  imageUrl   String?
+  active     Boolean @default(true)
+  sortOrder  Int     @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  priceTiers PriceTier[]
+  business   Business    @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  sales      Sale[]
+
+  @@index([businessId])
+  @@index([businessId, barcode])
+  @@index([businessId, category])
+}
+
+// Price tiers per item (¼ kg = 25, ½ kg = 45, 1 kg = 85, etc.)
+model PriceTier {
+  id     String @id @default(cuid())
+  itemId String
+  qty    Float
+  label  String // "¼ kg" | "500ml" | "1 doz"
+  price  Float
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([itemId])
+}
+
+// ─── DAY RECORDS ─────────────────────────────────────────────────────────────
+model DayRecord {
+  id            String    @id @default(cuid())
+  businessId    String
+  date          String    // YYYY-MM-DD
+  cashOpening   Float     @default(0)
+  mpesaOpening  Float     @default(0)
+  cashClosing   Float?
+  mpesaClosing  Float?
+  cashVariance  Float?
+  mpesaVariance Float?
+  notes         String?
+  finalized     Boolean   @default(false)
+  finalizedAt   DateTime?
+  createdAt     DateTime  @default(now())
+
+  business Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  sales    Sale[]
+  expenses Expense[]
+
+  @@unique([businessId, date])
+  @@index([businessId])
+  @@index([businessId, finalized])
+}
+
+// ─── SALES ───────────────────────────────────────────────────────────────────
+model Sale {
+  id            String   @id @default(cuid())
+  dayId         String
+  itemId        String
+  itemName      String   // denormalized for history safety
+  emoji         String
+  qty           Float
+  unit          String
+  unitPrice     Float
+  total         Float
+  paymentMethod String   // cash | mpesa | credit | card
+  staffId       String?
+  receiptNo     String   @unique
+  voided        Boolean  @default(false)
+  voidedAt      DateTime?
+  timestamp     DateTime @default(now())
+
+  day   DayRecord @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  item  Item      @relation(fields: [itemId], references: [id])
+  staff Staff?    @relation(fields: [staffId], references: [id])
+
+  @@index([dayId])
+  @@index([dayId, paymentMethod])
+  @@index([dayId, staffId])
+}
+
+// ─── EXPENSES ────────────────────────────────────────────────────────────────
+model Expense {
+  id            String   @id @default(cuid())
+  dayId         String
+  category      String   // restock | rent | labor | utilities | transport | supplies | other
+  amount        Float
+  description   String?
+  paymentMethod String   // cash | mpesa
+  staffId       String?
+  timestamp     DateTime @default(now())
+
+  day   DayRecord @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  staff Staff?    @relation(fields: [staffId], references: [id])
+
+  @@index([dayId])
+}
