@@ -36,13 +36,21 @@ model Business {
   smsRestockRemind  Boolean  @default(true)
   isDemo            Boolean  @default(false)
   demoSlug          String?  @unique
+  // ─ Storefront config (JSON) ─────────────────────────────────────────────────
+  storeConfig       Json?    // { whatsappNumber, brandColor, logoUrl, deliveryFee,
+                             //   freeAboveAmount, estimatedDeliveryHours, openingHours,
+                             //   closedMessage, messageHeader, messageFooter, isStoreOpen,
+                             //   storeTagline, storeSlug }
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  users  User[]
-  staff  Staff[]
-  items  Item[]
-  days   DayRecord[]
+  users          User[]
+  staff          Staff[]
+  items          Item[]
+  days           DayRecord[]
+  storeCustomers StoreCustomer[]
+  storeOrders    StoreOrder[]
+  cartSessions   StoreCartSession[]
 
   @@index([demoSlug])
 }
@@ -200,3 +208,66 @@ model Expense {
 
   @@index([dayId])
 }
+
+// ─── STOREFRONT: CUSTOMERS ───────────────────────────────────────────────────
+model StoreCustomer {
+  id           String   @id @default(cuid())
+  businessId   String
+  name         String
+  phone        String                    // Used as identity key per shop
+  sessionToken String?  @unique          // Rotating auth token stored in browser
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  business Business     @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  orders   StoreOrder[]
+
+  @@unique([businessId, phone])          // One account per phone per shop
+  @@index([businessId])
+  @@index([sessionToken])
+}
+
+// ─── STOREFRONT: ORDERS ──────────────────────────────────────────────────────
+model StoreOrder {
+  id               String   @id @default(cuid())
+  businessId       String
+  customerId       String
+  referenceId      String   @unique      // e.g. ORD-20260407-A4X2
+  status           String   @default("pending")
+                                         // pending | confirmed | out_for_delivery | delivered | cancelled
+  items            Json                  // [{ itemId, name, emoji, variantLabel, qty, unitPrice, total }]
+  subtotal         Float
+  deliveryFee      Float    @default(0)
+  total            Float
+  deliveryLocation String
+  specialNote      String?
+  paymentMethod    String?               // cash_on_delivery | mpesa_on_delivery
+  whatsappSent     Boolean  @default(false)
+  channel          String   @default("web") // web | pos
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  business Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  customer StoreCustomer @relation(fields: [customerId], references: [id])
+
+  @@index([businessId])
+  @@index([customerId])
+  @@index([businessId, status])
+  @@index([businessId, createdAt])
+}
+
+// ─── STOREFRONT: CART SESSIONS ───────────────────────────────────────────────
+model StoreCartSession {
+  id         String   @id @default(cuid())
+  token      String   @unique            // UUID issued to browser localStorage
+  businessId String
+  items      Json     @default("[]")     // [{ itemId, variantLabel, qty, price }]
+  expiresAt  DateTime                    // 7 days from last mutation
+  updatedAt  DateTime @updatedAt
+
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([businessId])
+  @@index([token])
+}
+

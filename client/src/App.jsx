@@ -9,6 +9,7 @@ import Auth         from './pages/Auth';
 import Onboarding   from './pages/Onboarding';
 import MobileApp    from './pages/MobileApp';
 import DesktopApp   from './pages/DesktopApp';
+import PublicStore  from './pages/PublicStore';
 
 // Global toast renderer
 function Toasts() {
@@ -69,6 +70,8 @@ export default function App() {
         <Route path="/auth"       element={<Auth />} />
         <Route path="/onboarding" element={<Protected><Onboarding /></Protected>} />
         <Route path="/app/*"      element={<Protected><AppLayout /></Protected>} />
+        {/* Public storefront — no auth required */}
+        <Route path="/s/:slug"    element={<PublicStore />} />
         <Route path="*"           element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

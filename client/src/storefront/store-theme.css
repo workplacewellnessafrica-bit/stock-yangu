@@ -1,0 +1,347 @@
+/* ═══════════════════════════════════════════════════════
+   STOCK YANGU — PUBLIC STOREFRONT THEME
+   Scoped under .store-theme to never leak into POS styles
+   Mobile-first, Light + Dark Mode, customizable brand color
+═══════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+/* ── Light Mode (default) ───────────────────────────────── */
+.store-theme {
+  --brand:         #22C55E;
+  --brand-dim:     rgba(34,197,94,0.12);
+  --brand-dark:    #166534;
+  --brand-hover:   #16a34a;
+
+  --bg:            #F8FAF9;
+  --bg-2:          #FFFFFF;
+  --bg-3:          #EFF3F1;
+  --surface:       #FFFFFF;
+  --surface-2:     #F3F7F5;
+  --surface-3:     #E8EFE9;
+  --panel:         #FFFFFF;
+
+  --border:        rgba(0,0,0,0.08);
+  --border-md:     rgba(0,0,0,0.14);
+
+  --text:          #0D1F15;
+  --text-2:        #3D5A47;
+  --text-3:        #6B8C76;
+  --text-muted:    #A0B8A8;
+  --text-inv:      #FFFFFF;
+
+  --danger:        #EF4444;
+  --danger-dim:    rgba(239,68,68,0.10);
+  --warn:          #F59E0B;
+  --warn-dim:      rgba(245,158,11,0.12);
+  --success:       #22C55E;
+  --success-dim:   rgba(34,197,94,0.12);
+  --info:          #3B82F6;
+
+  --font-head:     'Playfair Display', Georgia, serif;
+  --font-body:     'DM Sans', system-ui, sans-serif;
+
+  --radius-sm:     6px;
+  --radius:        12px;
+  --radius-lg:     16px;
+  --radius-xl:     24px;
+  --radius-full:   9999px;
+
+  --shadow-sm:     0 1px 4px rgba(0,0,0,0.06);
+  --shadow:        0 4px 16px rgba(0,0,0,0.10);
+  --shadow-lg:     0 12px 40px rgba(0,0,0,0.14);
+  --shadow-brand:  0 0 20px rgba(34,197,94,0.25);
+
+  --header-h:      64px;
+  --safe-bottom:   env(safe-area-inset-bottom, 16px);
+
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  min-height: 100dvh;
+}
+
+/* ── Dark Mode ──────────────────────────────────────────── */
+.store-theme[data-theme="dark"] {
+  --bg:            #080C0A;
+  --bg-2:          #0E1510;
+  --bg-3:          #162018;
+  --surface:       #0E1510;
+  --surface-2:     #162018;
+  --surface-3:     #1C2A20;
+  --panel:         #111916;
+
+  --border:        rgba(255,255,255,0.07);
+  --border-md:     rgba(255,255,255,0.13);
+
+  --text:          #F0FDF4;
+  --text-2:        #BBDDC4;
+  --text-3:        #6B9B78;
+  --text-muted:    #4A7055;
+  --text-inv:      #000;
+
+  --shadow-sm:     0 1px 4px rgba(0,0,0,0.4);
+  --shadow:        0 4px 16px rgba(0,0,0,0.5);
+  --shadow-lg:     0 12px 40px rgba(0,0,0,0.6);
+}
+
+/* ── Reset ──────────────────────────────────────────────── */
+.store-theme *, .store-theme *::before, .store-theme *::after { box-sizing: border-box; }
+.store-theme img, .store-theme video { max-width: 100%; display: block; }
+.store-theme button { cursor: pointer; border: none; background: none; font: inherit; }
+.store-theme input, .store-theme textarea, .store-theme select { font: inherit; outline: none; }
+.store-theme a { color: inherit; text-decoration: none; }
+
+/* ── Scrollbars ─────────────────────────────────────────── */
+.store-theme ::-webkit-scrollbar { width: 4px; height: 4px; }
+.store-theme ::-webkit-scrollbar-track { background: transparent; }
+.store-theme ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 4px; }
+
+/* ── Typography ─────────────────────────────────────────── */
+.store-theme h1,.store-theme h2,.store-theme h3,.store-theme h4 { font-family: var(--font-head); line-height: 1.2; }
+
+/* ── Buttons ────────────────────────────────────────────── */
+.store-theme .s-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 10px 20px;
+  border-radius: var(--radius);
+  font-family: var(--font-body); font-weight: 600; font-size: 14px;
+  transition: all 0.15s ease; white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.store-theme .s-btn:active { transform: scale(0.97); }
+.store-theme .s-btn:disabled { opacity: 0.45; pointer-events: none; }
+.store-theme .s-btn-primary   { background: var(--brand); color: #fff; }
+.store-theme .s-btn-primary:hover { background: var(--brand-hover); box-shadow: var(--shadow-brand); }
+.store-theme .s-btn-ghost     { background: transparent; color: var(--text-2); border: 1px solid var(--border-md); }
+.store-theme .s-btn-ghost:hover { background: var(--surface-2); }
+.store-theme .s-btn-danger    { background: var(--danger-dim); color: var(--danger); border: 1px solid rgba(239,68,68,.2); }
+.store-theme .s-btn-danger:hover { background: var(--danger); color: #fff; }
+.store-theme .s-btn-lg        { padding: 14px 28px; font-size: 16px; border-radius: var(--radius-lg); }
+.store-theme .s-btn-sm        { padding: 6px 14px; font-size: 12px; }
+.store-theme .s-btn-full      { width: 100%; }
+.store-theme .s-btn-icon      { padding: 10px; aspect-ratio: 1; border-radius: var(--radius); }
+
+/* ── Card ───────────────────────────────────────────────── */
+.store-theme .s-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.store-theme .s-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+
+/* ── Inputs ─────────────────────────────────────────────── */
+.store-theme .s-input {
+  width: 100%; background: var(--surface-2); border: 1.5px solid var(--border-md);
+  border-radius: var(--radius); padding: 12px 14px; color: var(--text); font-size: 15px;
+  transition: border-color 0.15s;
+}
+.store-theme .s-input:focus { border-color: var(--brand); }
+.store-theme .s-input::placeholder { color: var(--text-muted); }
+.store-theme .s-label { font-size: 12px; font-weight: 600; color: var(--text-3); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; display: block; }
+
+/* ── Badges ─────────────────────────────────────────────── */
+.store-theme .s-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: var(--radius-full);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.03em;
+}
+.store-theme .s-badge-success { background: var(--success-dim); color: var(--success); }
+.store-theme .s-badge-warn    { background: var(--warn-dim);    color: var(--warn);    }
+.store-theme .s-badge-danger  { background: var(--danger-dim);  color: var(--danger);  }
+.store-theme .s-badge-gray    { background: var(--surface-3);   color: var(--text-3);  }
+
+/* ── Overlay / Sheet / Modal ────────────────────────────── */
+.store-theme .s-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
+  animation: st-fade-in 0.18s ease;
+}
+.store-theme .s-sheet {
+  position: fixed; inset-x: 0; bottom: 0;
+  background: var(--surface); border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  border-top: 1px solid var(--border-md);
+  z-index: 110; max-height: 94dvh; overflow-y: auto;
+  padding-bottom: var(--safe-bottom);
+  animation: st-slide-up 0.28s cubic-bezier(0.32,0.72,0,1);
+}
+.store-theme .s-modal-box {
+  background: var(--surface); border: 1px solid var(--border-md);
+  border-radius: var(--radius-xl); width: 100%; max-width: 440px;
+  animation: st-scale-in 0.22s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: var(--shadow-lg);
+}
+@keyframes st-fade-in   { from { opacity: 0; } }
+@keyframes st-slide-up  { from { transform: translateY(100%); } }
+@keyframes st-scale-in  { from { transform: scale(0.9); opacity: 0; } }
+
+/* ── Spinner ────────────────────────────────────────────── */
+.store-theme .s-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--surface-3); border-top-color: var(--brand);
+  border-radius: 50%; animation: st-spin 0.65s linear infinite;
+}
+@keyframes st-spin { to { transform: rotate(360deg); } }
+
+/* ── Skeleton ───────────────────────────────────────────── */
+.store-theme .s-skeleton {
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 50%, var(--surface-2) 75%);
+  background-size: 200% 100%; border-radius: var(--radius);
+  animation: st-shimmer 1.5s infinite;
+}
+@keyframes st-shimmer { to { background-position: -200% 0; } }
+
+/* ── Header ─────────────────────────────────────────────── */
+.store-theme .s-header {
+  position: sticky; top: 0; z-index: 50;
+  height: var(--header-h);
+  display: flex; align-items: center;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 0 16px; gap: 12px;
+}
+
+/* ── Search Bar ─────────────────────────────────────────── */
+.store-theme .s-search {
+  display: flex; align-items: center; gap: 10px;
+  flex: 1; max-width: 480px;
+  background: var(--surface-2); border: 1.5px solid var(--border-md);
+  border-radius: var(--radius-full); padding: 10px 16px;
+}
+.store-theme .s-search:focus-within { border-color: var(--brand); }
+.store-theme .s-search input { flex: 1; background: none; color: var(--text); font-size: 14px; border: none; }
+.store-theme .s-search input::placeholder { color: var(--text-muted); }
+
+/* ── Category Chips ─────────────────────────────────────── */
+.store-theme .s-chips {
+  display: flex; gap: 8px; overflow-x: auto; padding: 12px 16px 0;
+  flex-shrink: 0; scrollbar-width: none;
+}
+.store-theme .s-chips::-webkit-scrollbar { display: none; }
+.store-theme .s-chip {
+  flex-shrink: 0; display: flex; align-items: center; gap: 5px;
+  padding: 7px 16px; border-radius: var(--radius-full);
+  border: 1.5px solid var(--border-md); background: var(--surface-2);
+  color: var(--text-2); font-size: 13px; font-weight: 600;
+  white-space: nowrap; cursor: pointer;
+  transition: all 0.14s; -webkit-tap-highlight-color: transparent;
+}
+.store-theme .s-chip:active { transform: scale(0.95); }
+.store-theme .s-chip.active {
+  background: var(--brand); border-color: var(--brand); color: #fff;
+}
+
+/* ── Product Grid ───────────────────────────────────────── */
+.store-theme .s-product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 16px;
+}
+@media (min-width: 480px) {
+  .store-theme .s-product-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 768px) {
+  .store-theme .s-product-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 20px; }
+}
+@media (min-width: 1100px) {
+  .store-theme .s-product-grid { grid-template-columns: repeat(5, 1fr); }
+}
+
+/* ── Product Card ───────────────────────────────────────── */
+.store-theme .s-product-card {
+  display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+  cursor: pointer; transition: all 0.2s;
+  position: relative;
+}
+.store-theme .s-product-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); border-color: var(--brand); }
+.store-theme .s-product-card:active { transform: scale(0.98); }
+
+.store-theme .s-card-img {
+  aspect-ratio: 1; background: var(--surface-2);
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.store-theme .s-card-img img { width: 100%; height: 100%; object-fit: cover; }
+.store-theme .s-card-emoji { font-size: 52px; line-height: 1; }
+
+.store-theme .s-card-body { padding: 10px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.store-theme .s-card-name { font-weight: 600; font-size: 13px; color: var(--text); line-height: 1.35; }
+.store-theme .s-card-price { font-family: var(--font-head); font-weight: 700; font-size: 15px; color: var(--brand); }
+.store-theme .s-card-unit  { font-size: 11px; color: var(--text-muted); }
+.store-theme .s-card-add   {
+  margin: 8px 10px 10px; padding: 9px;
+  background: var(--brand-dim); color: var(--brand);
+  border: 1.5px solid rgba(34,197,94,0.3);
+  border-radius: var(--radius); font-weight: 700; font-size: 13px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: all 0.14s;
+}
+.store-theme .s-card-add:hover { background: var(--brand); color: #fff; }
+.store-theme .s-card-add.out { background: var(--surface-3); color: var(--text-muted); border-color: transparent; cursor: not-allowed; }
+.store-theme .s-stock-tag {
+  position: absolute; top: 8px; right: 8px;
+  font-size: 10px; font-weight: 800; padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+/* ── Cart Drawer ────────────────────────────────────────── */
+.store-theme .s-cart-fab {
+  position: fixed; bottom: 20px; right: 20px; z-index: 60;
+  width: 58px; height: 58px; border-radius: var(--radius-full);
+  background: var(--brand); color: #fff; box-shadow: var(--shadow-brand);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  animation: st-bounce-in 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  transition: transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.store-theme .s-cart-fab:active { transform: scale(0.92); }
+.store-theme .s-cart-count {
+  position: absolute; top: -4px; right: -4px;
+  background: var(--danger); color: #fff;
+  font-size: 11px; font-weight: 800; min-width: 20px; height: 20px;
+  border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;
+  padding: 0 4px;
+}
+@keyframes st-bounce-in { from { transform: scale(0.6); opacity: 0; } }
+
+/* ── Sidebar filter (desktop) ───────────────────────────── */
+@media (min-width: 768px) {
+  .store-theme .s-layout { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100dvh - var(--header-h)); }
+  .store-theme .s-sidebar {
+    position: sticky; top: var(--header-h); height: calc(100dvh - var(--header-h));
+    overflow-y: auto; border-right: 1px solid var(--border);
+    background: var(--surface); padding: 20px 16px;
+  }
+}
+
+/* Status badge colours */
+.store-theme .s-status-pending           { color: #F59E0B; }
+.store-theme .s-status-confirmed         { color: #22C55E; }
+.store-theme .s-status-out_for_delivery  { color: #3B82F6; }
+.store-theme .s-status-delivered         { color: #6B7280; }
+.store-theme .s-status-cancelled         { color: #EF4444; }
+
+/* ── Divider ────────────────────────────────────────────── */
+.store-theme .s-divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+/* ── Toast ──────────────────────────────────────────────── */
+.store-theme .s-toast {
+  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+  background: var(--surface-3); border: 1px solid var(--border-md);
+  border-radius: var(--radius-full); padding: 10px 20px;
+  font-size: 13px; font-weight: 600; color: var(--text);
+  box-shadow: var(--shadow-lg); z-index: 200;
+  animation: st-toast 0.25s ease;
+  white-space: nowrap;
+}
+@keyframes st-toast { from { opacity: 0; transform: translateX(-50%) translateY(10px); } }
+
+/* ── Closed Banner ──────────────────────────────────────── */
+.store-theme .s-closed-banner {
+  background: linear-gradient(135deg, #1a0a00, #3d1800);
+  color: #FFB347; font-weight: 700; font-size: 15px;
+  text-align: center; padding: 14px 16px;
+  border-bottom: 1px solid rgba(249,115,22,0.3);
+}

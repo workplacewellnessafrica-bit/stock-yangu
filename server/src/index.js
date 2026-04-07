@@ -13,6 +13,9 @@ const reconcileRoutes = require('./routes/reconcile');
 const reportsRoutes = require('./routes/reports');
 const smsRoutes = require('./routes/sms');
 const staffRoutes = require('./routes/staff');
+const storefrontRoutes = require('./routes/storefront');
+const storeOrdersRoutes = require('./routes/storeOrders');
+const storeCustomersRoutes = require('./routes/storeCustomers');
 
 const { setupSocket } = require('./services/socketService');
 
@@ -50,6 +53,10 @@ app.use('/api/reconcile', reconcileRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/sms', smsRoutes);
 app.use('/api/staff', staffRoutes);
+// ─ Public Storefront ──────────────────────────────────────────────────────────
+app.use('/api/store', storefrontRoutes);
+app.use('/api/store', storeOrdersRoutes);
+app.use('/api/store', storeCustomersRoutes);
 
 // Health check
 app.get('/health', (_req, res) => res.json({ status: 'ok', ts: new Date().toISOString() }));
