@@ -49,6 +49,10 @@ export function useSocket() {
       toast(`✅ Day closed. Profit: KES ${summary.profit.toFixed(0)}`, 'success', 5000);
     });
 
+    socket.on('store:new_order', ({ referenceId, customerName, total }) => {
+      toast(`🛍️ Web Order: ${customerName} — KES ${total} (${referenceId})`, 'info', 6000);
+    });
+
     return () => {
       socket?.disconnect();
       socket = null;

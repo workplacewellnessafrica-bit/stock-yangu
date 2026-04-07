@@ -141,19 +141,36 @@ router.get('/demo/:slug', async (req, res) => {
   }
 });
 
-// ─── GET /api/business/demos ──────────────────────────────────────────────────
-router.get('/demos', async (_req, res) => {
+// ─── POST /api/business/verify-admin-pin ─────────────────────────────────────
+router.post('/verify-admin-pin', async (req, res) => {
   try {
-    const demos = await prisma.business.findMany({
-      where: { isDemo: true },
-      select: {
-        id: true, name: true, ownerName: true, type: true,
-        demoSlug: true, productCategories: true,
-      },
-    });
-    res.json(demos);
+    const { pin } = z.object({ pin: z.string().min(4) }).parse(req.body);
+    // Find any business that matches this pin (for the demo/standalone use case)
+    // In production, we'd ideally know which business we're targeting, but for the storefront admin,
+    // we use the pin to authorize settings changes.
+    const businesses = await prisma.business.findMany();
+    for (const b of businesses) {
+      const valid = await bcrypt.compare(pin, b.adminPinHash);
+      if (valid) return res.json({ ok: true, businessId: b.id });
+    }
+    res.status(401).json({ error: 'Invalid PIN' });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to list demos' });
+    res.status(400).json({ error: 'Invalid request' });
+  }
+});
+
+// ─── PUT /api/business/store-config ──────────────────────────────────────────
+router.put('/store-config', auth, async (req, res) => {
+  try {
+    const { storeConfig } = req.body;
+    await prisma.business.update({
+      where: { id: req.user.businessId },
+      data: { storeConfig },
+    });
+    res.json({ message: 'Store configuration updated' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update store config' });
   }
 });
 
