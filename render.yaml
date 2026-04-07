@@ -1,22 +1,25 @@
-# render.yaml — Render Blueprint for Stock Yangu
-# Use this to deploy the unified monorepo to Render as a Web Service.
+# render.yaml — Stock Yangu Blueprint
+
+databases:
+  - name: stockyangu-db
+    plan: free
+    region: ohio
 
 services:
   - type: web
     name: stock-yangu
     env: node
-    plan: free # Change to 'starter' for production performance
-    region: ohio # Change to your preferred region
-    
+    plan: free
+    region: ohio
     buildCommand: npm install && npm run build
-    startCommand: npm start # This runs 'npm run start --workspace=server'
-    
+    startCommand: npm start
+
     envVars:
       - key: NODE_VERSION
         value: 20
       - key: DATABASE_URL
         fromDatabase:
-          name: stockyangu-db # If using Render PostgreSQL, otherwise set manually
+          name: stockyangu-db
           property: connectionString
       - key: JWT_SECRET
         generateValue: true
@@ -24,10 +27,8 @@ services:
         generateValue: true
       - key: PORT
         value: 10000
-      - key: VITE_API_URL
-        value: "" # Leave empty for unified origin (same domain)
       - key: CLIENT_URL
-        value: "" # Leave empty for unified origin
+        value: ""
       - key: AT_USERNAME
         sync: false
       - key: AT_API_KEY
