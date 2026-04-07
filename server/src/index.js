@@ -24,10 +24,17 @@ const app = express();
 const httpServer = http.createServer(app);
 
 // ─── Socket.io ───────────────────────────────────────────────────────────────
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  process.env.RENDER_EXTERNAL_URL,
+  'http://localhost:5173'
+].filter(Boolean);
+
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: allowedOrigins.length > 0 ? allowedOrigins : '*',
     methods: ['GET', 'POST'],
+    credentials: true,
   },
 });
 
@@ -38,7 +45,7 @@ app.set('io', io);
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: allowedOrigins.length > 0 ? allowedOrigins : '*',
   credentials: true,
 }));
 app.use(express.json());

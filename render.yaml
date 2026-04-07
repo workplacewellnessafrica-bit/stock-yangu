@@ -12,6 +12,7 @@ services:
     plan: free
     region: ohio
     buildCommand: npm install && npm run build
+    preDeployCommand: cd server && npx prisma migrate deploy && npm run db:seed
     startCommand: npm start
 
     envVars:
