@@ -58,7 +58,7 @@ export default function DesktopApp() {
   });
 
   return (
-    <div style={{ display: 'flex', height: '100dvh', overflow: 'hidden' }}>
+    <div className="app-shell" style={{ display: 'flex' }}>
       {/* Sidebar */}
       <aside style={{
         width: 220,
@@ -121,7 +121,7 @@ export default function DesktopApp() {
       </aside>
 
       {/* Main area */}
-      <main style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <main className="app-content">
         <Routes>
           <Route path="/"          element={<DashboardPanel />} />
           <Route path="/pos"       element={<POSScreen />} />

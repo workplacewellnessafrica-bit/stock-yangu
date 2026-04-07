@@ -34,7 +34,7 @@ export default function MobileApp() {
   const needsStaffPin = false; // Could require PIN before POS if desired
 
   return (
-    <div className="flex-col h-full">
+    <div className="flex-col app-shell">
       {/* Header */}
       <div className="header">
         <div className="flex items-center gap-3">
@@ -68,7 +68,7 @@ export default function MobileApp() {
       </div>
 
       {/* Page content */}
-      <div className="flex-1 min-h-0 overflow-hidden">
+      <div className="app-content">
         <Routes>
           <Route path="/"          element={<POSScreen />} />
           <Route path="/log"       element={<LogScreen />} />

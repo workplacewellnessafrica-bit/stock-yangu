@@ -50,7 +50,7 @@ export default function Auth() {
   }
 
   return (
-    <div className="flex-col items-center justify-center" style={{ minHeight: '100dvh', padding: '24px 16px' }}>
+    <div className="flex-col items-center" style={{ minHeight: '100dvh', padding: '40px 16px 80px' }}>
       {/* Back link */}
       <button onClick={() => navigate('/')} style={{ color: 'var(--text-3)', marginBottom: 32, alignSelf: 'flex-start', maxWidth: 480, width: '100%', margin: '0 auto 32px' }}>
         ← Back

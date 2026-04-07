@@ -107,7 +107,7 @@ export default function Onboarding() {
   const progress = (step / (STEPS.length - 1)) * 100;
 
   return (
-    <div className="flex-col" style={{ height: '100dvh' }}>
+    <div className="flex-col app-shell">
       {/* Progress */}
       <div style={{ padding: '12px 20px', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
         <div className="flex items-center justify-between" style={{ marginBottom: 10 }}>
@@ -118,7 +118,7 @@ export default function Onboarding() {
       </div>
 
       {/* Body */}
-      <div className="onboard-step" style={{ flex: 1 }}>
+      <div className="onboard-step app-content">
         <div>
           <h2 className="onboard-title">{current.title}</h2>
           <p className="onboard-sub">{current.sub}</p>
