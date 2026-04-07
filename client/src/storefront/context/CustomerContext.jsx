@@ -5,7 +5,8 @@
 import { createContext, useContext, useState, useCallback } from 'react';
 import { lsGet, lsSet, lsRemove, KEYS } from '../utils/storage.js';
 
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const isDev = import.meta.env.DEV;
+const BASE = isDev ? (import.meta.env.VITE_API_URL || 'http://localhost:5000') : '';
 const CustomerContext = createContext(null);
 
 export function CustomerProvider({ slug, children }) {

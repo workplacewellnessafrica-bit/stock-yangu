@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "concurrently \"npm run dev --workspace=server\" \"npm run dev --workspace=client\"",
     "build": "npm run build --workspace=client",
+    "generate": "npm run db:generate --workspace=server",
+    "postinstall": "npm run generate",
     "start": "npm run start --workspace=server"
   },
   "devDependencies": {

@@ -3,6 +3,7 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
+const path = require('path');
 
 const authRoutes = require('./routes/auth');
 const businessRoutes = require('./routes/business');
@@ -61,8 +62,17 @@ app.use('/api/store', storeCustomersRoutes);
 // Health check
 app.get('/health', (_req, res) => res.json({ status: 'ok', ts: new Date().toISOString() }));
 
-// 404
-app.use((_req, res) => res.status(404).json({ error: 'Route not found' }));
+// ─ Production: Serve Static Frontend ──────────────────────────────────────────
+const clientDir = path.join(__dirname, '../../client/dist');
+app.use(express.static(clientDir));
+
+// Fallback for SPA routing (React Router handles all non-API paths)
+app.get('*', (req, res) => {
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({ error: 'API route not found' });
+  }
+  res.sendFile(path.join(clientDir, 'index.html'));
+});
 
 // Global error handler
 app.use((err, _req, res, _next) => {

@@ -6,7 +6,8 @@ import { createContext, useContext, useReducer, useEffect, useCallback } from 'r
 import { lsGet, lsSet, KEYS } from '../utils/storage.js';
 import { SAMPLE_PRODUCTS, SAMPLE_CATEGORIES } from '../data/sampleProducts.js';
 
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const isDev = import.meta.env.DEV;
+const BASE = isDev ? (import.meta.env.VITE_API_URL || 'http://localhost:5000') : '';
 
 const ShopContext = createContext(null);
 
