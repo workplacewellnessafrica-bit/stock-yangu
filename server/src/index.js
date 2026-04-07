@@ -51,6 +51,17 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// ─── Health Check ─────────────────────────────────────────────────────────────
+app.get('/api/health', async (req, res) => {
+  try {
+    const userCount = await prisma.user.count();
+    res.json({ status: 'ok', database: 'connected', userCount });
+  } catch (err) {
+    console.error('Health Check Failed:', err);
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
 // ─── Routes ──────────────────────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
 app.use('/api/business', businessRoutes);
